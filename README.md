@@ -45,7 +45,7 @@ class UserMenuBuilder implements MenuBuilder {
 }
 
 // Register the builder
-menuRegistry.register('main-menu', new UserMenuBuilder())
+menuRegistry.register(new UserMenuBuilder())
 ```
 
 ### Using Menu in Components
@@ -84,10 +84,10 @@ const { valid, errors, warnings } = validateMenus()
 
 ### menuRegistry
 
-- `register(menuName: string, builder: MenuBuilder)`: Register a menu builder
-- `unregister(menuName: string)`: Unregister all builders for a menu
+- `register(builder: MenuBuilder)`: Register a menu builder
+- `unregister(builder: MenuBuilder)`: Unregister a builder
 - `getMenu(menuName: string)`: Get a built menu by name
-- `getMenuNames()`: Get all registered menu names
+- `getMenuNames()`: Get all menu names that have been built and cached
 - `clear()`: Clear all registered builders
 
 ### Functions

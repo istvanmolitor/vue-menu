@@ -12,7 +12,8 @@ import type { MenuItemConfig } from '../types/menu'
  */
 export function debugMenuRegistry(): void {
   console.group('🔍 Menu Registry Debug')
-  console.log('Total registered menus:', menuRegistry.size)
+  console.log('Total registered builders:', menuRegistry.getBuilderCount())
+  console.log('Menus in cache:', menuRegistry.size)
 
   const menuNames = getMenuNames()
   menuNames.forEach((menuName, index) => {

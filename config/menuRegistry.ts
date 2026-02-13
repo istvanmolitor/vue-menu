@@ -12,52 +12,48 @@ export const menuUpdateTrigger = ref(0)
  * Manages registration and retrieval of menu builders
  */
 class MenuRegistry {
-  private builders: Map<string, MenuBuilder[]> = new Map()
+  private builders: MenuBuilder[] = []
   private menuCache: Map<string, MenuItemConfig> = reactive(new Map())
 
   /**
    * Register a menu builder
-   * @param menuName - Name of the menu
    * @param builder - Menu builder instance
    */
-  register(menuName: string, builder: MenuBuilder): void {
-    if (!this.builders.has(menuName)) {
-      this.builders.set(menuName, [])
-    }
-    this.builders.get(menuName)!.push(builder)
+  register(builder: MenuBuilder): void {
+    this.builders.push(builder)
 
-    // Invalidate cache for this menu
-    this.menuCache.delete(menuName)
+    // Invalidate all caches as a new builder might affect any menu
+    this.menuCache.clear()
 
     // Trigger menu update
     menuUpdateTrigger.value++
   }
 
   /**
-   * Unregister all builders for a menu
-   * @param menuName - Name of the menu to unregister
+   * Unregister a builder
+   * @param builder - Menu builder instance to unregister
    */
-  unregister(menuName: string): boolean {
-    this.menuCache.delete(menuName)
-    return this.builders.delete(menuName)
+  unregister(builder: MenuBuilder): boolean {
+    const index = this.builders.indexOf(builder)
+    if (index !== -1) {
+      this.builders.splice(index, 1)
+      this.menuCache.clear()
+      menuUpdateTrigger.value++
+      return true
+    }
+    return false
   }
 
   /**
    * Get a built menu by name
-   * All registered builders for this menu will be called to build the menu
+   * All registered builders will be called to build the menu
    * @param menuName - Name of the menu
-   * @returns Built menu configuration or undefined if no builders registered
+   * @returns Built menu configuration
    */
-  getMenu(menuName: string): MenuItemConfig | undefined {
+  getMenu(menuName: string): MenuItemConfig {
     // Check cache first
     if (this.menuCache.has(menuName)) {
-      return this.menuCache.get(menuName)
-    }
-
-    const builders = this.builders.get(menuName)
-
-    if (!builders || builders.length === 0) {
-      return undefined
+      return this.menuCache.get(menuName)!
     }
 
     // Start with empty menu structure
@@ -68,7 +64,7 @@ class MenuRegistry {
     }
 
     // Let each builder build the menu
-    builders.forEach((builder) => {
+    this.builders.forEach((builder) => {
       menu = builder.build(menu, menuName)
     })
 
@@ -99,26 +95,36 @@ class MenuRegistry {
   }
 
   /**
+   * Get all registered builder names/types (for debugging)
+   * @returns Array of builder descriptions
+   */
+  getBuilderCount(): number {
+    return this.builders.length
+  }
+
+  /**
    * Get all menu names
-   * @returns Array of registered menu names
+   * Note: Since builders are no longer tied to specific menus during registration,
+   * this might not be exhaustive if menus are requested dynamically.
+   * @returns Array of registered menu names from cache
    */
   getMenuNames(): string[] {
-    return Array.from(this.builders.keys())
+    return Array.from(this.menuCache.keys())
   }
 
   /**
    * Clear all registered builders
    */
   clear(): void {
-    this.builders.clear()
+    this.builders = []
     this.menuCache.clear()
   }
 
   /**
-   * Get the number of registered menus
+   * Get the number of registered builders
    */
   get size(): number {
-    return this.builders.size
+    return this.builders.length
   }
 }
 
