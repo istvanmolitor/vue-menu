@@ -6,7 +6,7 @@ import type { Component } from 'vue'
  */
 export interface MenuItemConfig {
   /** Unique identifier for the menu item */
-  id: string
+  id?: string
 
   /** Display title */
   title: string
@@ -43,15 +43,29 @@ export interface PackageMenuConfig {
 }
 
 /**
- * Menu Builder Interface
- * Builders implement this interface to construct menu items dynamically
+ * Menu Builder Class
+ * Builders extend this class to construct menu items dynamically
  */
-export interface MenuBuilder {
+export class MenuBuilder {
   /**
    * Build the menu structure
    * @param menu - Current menu configuration
    * @param menuName - Name of the menu being built
    * @returns Updated menu configuration
    */
-  build(menu: MenuItemConfig, menuName: string): MenuItemConfig
+  build(menu: MenuItemConfig, menuName: string): MenuItemConfig {
+    return menu
+  }
+
+  /**
+   * Add a menu item to the configuration
+   * @param menu - Target menu configuration
+   * @param item - Item to add
+   */
+  addMenuItem(menu: MenuItemConfig, item: MenuItemConfig): void {
+    if (!menu.children) {
+      menu.children = []
+    }
+    menu.children.push(item)
+  }
 }

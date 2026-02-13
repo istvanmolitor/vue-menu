@@ -1,4 +1,4 @@
-import type { MenuItemConfig, MenuBuilder } from '../types/menu'
+import { MenuBuilder, type MenuItemConfig } from '../types/menu'
 import { reactive, ref } from 'vue'
 
 /**
@@ -72,10 +72,30 @@ class MenuRegistry {
       menu = builder.build(menu, menuName)
     })
 
+    // Sort menu items recursively
+    this.sortMenuItems(menu)
+
     // Cache the built menu
     this.menuCache.set(menuName, menu)
 
     return menu
+  }
+
+  /**
+   * Sort menu items recursively based on their order property
+   * @param menu - Menu item to sort children of
+   */
+  private sortMenuItems(menu: MenuItemConfig): void {
+    if (menu.children && menu.children.length > 0) {
+      menu.children.sort((a, b) => {
+        const orderA = a.order ?? Number.MAX_SAFE_INTEGER
+        const orderB = b.order ?? Number.MAX_SAFE_INTEGER
+        return orderA - orderB
+      })
+
+      // Recursively sort children of children
+      menu.children.forEach((child) => this.sortMenuItems(child))
+    }
   }
 
   /**
@@ -104,3 +124,4 @@ class MenuRegistry {
 
 // Export a singleton instance
 export const menuRegistry = new MenuRegistry()
+
