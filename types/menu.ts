@@ -1,5 +1,3 @@
-import type { Component } from 'vue'
-
 /**
  * Menu item configuration interface
  * Supports multi-level nested menu items
@@ -15,10 +13,10 @@ export interface MenuItemConfig {
   path?: string
 
   /** Icon component from lucide-vue-next */
-  icon?: Component
+  icon?: string
 
   /** Child menu items for multi-level menus */
-  children?: MenuItemConfig[]
+  children: MenuItemConfig[]
 
   /** Display order (lower numbers appear first) */
   order?: number
@@ -46,16 +44,14 @@ export interface PackageMenuConfig {
  * Menu Builder Class
  * Builders extend this class to construct menu items dynamically
  */
-export class MenuBuilder {
+export abstract class MenuBuilder {
   /**
    * Build the menu structure
    * @param menu - Current menu configuration
    * @param menuName - Name of the menu being built
    * @returns Updated menu configuration
    */
-  build(menu: MenuItemConfig, menuName: string): MenuItemConfig {
-    return menu
-  }
+  abstract build(menu: MenuItemConfig, menuName: string): MenuItemConfig
 
   /**
    * Add a menu item to the configuration

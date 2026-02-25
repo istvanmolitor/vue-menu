@@ -130,4 +130,3 @@ class MenuRegistry {
 
 // Export a singleton instance
 export const menuRegistry = new MenuRegistry()
-

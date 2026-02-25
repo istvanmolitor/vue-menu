@@ -33,23 +33,9 @@ export function useMenu(menuName: string) {
     return !!item.children && item.children.length > 0
   }
 
-  /**
-   * Filter menu items by permission (if user has permission system)
-   * This is a placeholder - implement based on your permission system
-   */
-  const filterByPermission = (items: MenuItemConfig[], userPermissions?: string[]): MenuItemConfig[] => {
-    if (!userPermissions) return items
-
-    return items.filter(item => {
-      if (!item.permission) return true
-      return userPermissions.includes(item.permission)
-    })
-  }
-
   return {
     menu,
     menuItems,
-    hasChildren,
-    filterByPermission
+    hasChildren
   }
 }
