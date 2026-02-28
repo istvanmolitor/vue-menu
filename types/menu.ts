@@ -12,11 +12,11 @@ export interface MenuItemConfig {
   /** Route path (optional for parent items) */
   path?: string
 
-  /** Icon component from lucide-vue-next */
-  icon?: string
+  /** Icon component name or component itself */
+  icon?: string | any
 
   /** Child menu items for multi-level menus */
-  children: MenuItemConfig[]
+  children?: MenuItemConfig[]
 
   /** Display order (lower numbers appear first) */
   order?: number
